@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from "../assets/logo.svg";
+import logo from "../../assets/logo.svg";
 function Dashboard() {
   return <div className="w-screen p-4 text-xl bg-indigo-500">
     <div className='header flex gap-2'>

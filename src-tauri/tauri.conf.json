@@ -4,11 +4,11 @@
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:5173",
-    "distDir": "../build",
+    "distDir": "../dist",
     "withGlobalTauri":true
   },
   "package": {
-    "productName": "react-desktop-app",
+    "productName": "budget-buddy",
     "version": "0.1.0"
   },
   "tauri": {
@@ -21,6 +21,18 @@
         "message": true, 
         "open": true, 
         "save": true 
+      },
+      "fs": {
+        "all": true, 
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true
       },
 
       "notification": {
@@ -42,7 +54,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "expense-tracker",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

@@ -9,10 +9,13 @@ fn  start_app() {
     println!("Hello from Rust!");
 }
 
-
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![start_app,add_expense,get_expenses_data,])
+        .invoke_handler(tauri::generate_handler![
+            start_app,
+            add_expense,
+            get_expenses_data,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

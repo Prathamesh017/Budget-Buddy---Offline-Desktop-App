@@ -23,14 +23,15 @@ pub fn db_setup() {
 
         let connection = sqlite::open(&db_file_path);
         let query = "SELECT name  FROM sqlite_master WHERE type='table' AND name='expenseTable' ";
-        connection.unwrap().iterate(query, |pairs| {
-            for &(name, value) in pairs.iter() {
+        let result=connection.unwrap().iterate(query, |pairs| {
+            for &(_, value) in pairs.iter() {
                 if !value.unwrap().is_empty() {
                     is_table_created = true;
                 }
             }
             true
         });
+        println!("result{:?}",result.unwrap());
         if !is_table_created {
             create_table_in_db(&db_file_path);
         }
@@ -81,7 +82,6 @@ pub fn get_expenses_data() -> String {
             let mut expense_type = String::new();
             let mut expense_date = String::new();
             for &(name, value) in pairs.iter() {
-                println!("pairs {} {:?}",name,value);
                 match name {
                     "expense_name" => expense_name = value.unwrap().to_string(),
                     "expense_date" => expense_date = value.unwrap().to_string(),
@@ -106,8 +106,9 @@ pub fn get_expenses_data() -> String {
 fn get_current_directory() -> Result<String, String> {
     let current_directory = env::current_dir();
     if current_directory.is_ok() {
-        let db_file_path =
-            current_directory.unwrap().to_string_lossy().to_string() + "/src/db.sqlite"; //;
+            let db_file_path =
+            current_directory.unwrap().to_string_lossy().to_string() + "/db.sqlite"; //;
+        
         Ok(db_file_path.into())
     } else {
         Err("No Directory Found".into())
