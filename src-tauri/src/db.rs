@@ -1,13 +1,14 @@
-use serde::{Serialize};
+use serde::{Serialize,Deserialize};
 use std::env;
 use std::fs;
 use std::path::Path;
-
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize,Debug)]
+#[serde(rename_all = "snake_case")]
 pub struct ExpenseDataType {
-    name: String,
-    expense_type: String,
-    amount: i32,
+    pub expense_name: String,
+    pub expense_type: String,
+    pub expense_date:String,
+    pub expense_amount: String,
 }
 
 pub fn db_setup() {
@@ -38,7 +39,7 @@ pub fn db_setup() {
 
 fn create_table_in_db(path: &String) {
     let connection = sqlite::open(path);
-    let query = "CREATE TABLE expenseTable (name TEXT,expenseType TEXT, amount INTEGER)";
+    let query = "CREATE TABLE expenseTable (expense_name TEXT,expense_type TEXT, expense_amount INTEGER,expense_date TEXT)";
     let result = connection.unwrap().execute(query);
     if result.is_ok() {
         println!("Database Created Successfull");
@@ -48,21 +49,26 @@ fn create_table_in_db(path: &String) {
 }
 
 #[tauri::command]
-pub fn add_expense() {
+pub fn add_expense(invoke_message: &str)->bool{
+    let serialized_expense_arr:ExpenseDataType = serde_json::from_str(invoke_message).unwrap();
+    println!("I was invoked from JS, with this message: {:?}",serialized_expense_arr);
     let current_directory = get_current_directory();
     let connection = sqlite::open(current_directory.unwrap());
-    let query = format!("INSERT INTO expenseTable VALUES ('FOOD','INCOME',400);");
+    let query = format!("INSERT INTO expenseTable VALUES ('{}','{}','{}','{}');",serialized_expense_arr.expense_name,serialized_expense_arr.expense_type,serialized_expense_arr.expense_amount,serialized_expense_arr.expense_date);
     println!("{}", query);
 
     let result = connection.unwrap().execute(query);
     if result.is_ok() {
-        println!("Expense Add Successfully");
+        println!("Expense Added  Successfully");
+        return true;
     } else {
-        println!("Expense Delete Successfully");
+        println!("Expense Insertion Failed");
+        return false;
     }
 }
 #[tauri::command]
 pub fn get_expenses_data() -> String {
+    
     let directory = get_current_directory();
     let connection = sqlite::open(directory.unwrap());
     let query = "SELECT * FROM expenseTable";
@@ -71,25 +77,23 @@ pub fn get_expenses_data() -> String {
         .unwrap()
         .iterate(query, |pairs| {
             let mut expense_name = String::new();
-            let mut expense_amount = 0; // Initialize amount to a default value
+            let mut expense_amount = String::new(); // Initialize amount to a default value
             let mut expense_type = String::new();
+            let mut expense_date = String::new();
             for &(name, value) in pairs.iter() {
+                println!("pairs {} {:?}",name,value);
                 match name {
-                    "name" => expense_name = value.unwrap().to_string(),
-                    "amount" => {
-                        if let Ok(amount) = value.unwrap().parse::<i32>() {
-                            expense_amount = amount;
-                        } else {
-                            println!("Failed to parse amount: {}", value.unwrap());
-                        }
-                    }
-                    _ => expense_type = value.unwrap().to_string(),
+                    "expense_name" => expense_name = value.unwrap().to_string(),
+                    "expense_date" => expense_date = value.unwrap().to_string(),
+                    "expense_amount" => expense_amount=value.unwrap().to_string(),
+                    _=> expense_type = value.unwrap().to_string(),
                 }
             }
             expenses_data_arr.push(ExpenseDataType {
-                name: (expense_name),
-                expense_type: (expense_type),
-                amount: (expense_amount),
+                expense_name,
+                expense_type,
+                expense_amount,
+                expense_date
             });
             true
         })
