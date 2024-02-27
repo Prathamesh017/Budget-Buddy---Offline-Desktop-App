@@ -1,30 +1,26 @@
-# React + TypeScript + Vite
+# Budget Buddy - A Personal Budget Desktop APP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Budget Buddy is Personl Budget Offline Based Desktop App made With Tauri which will keep track of all  your transactions . 
 
-Currently, two official plugins are available:
+Tech - `TAURI` Toolkit wraped with  `REACT` for UI , `RUST` AND `SQLITE` COMBO FOR offline DB interaction. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## SETTING UP LOCALLY
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
+With RUST INSTALLED
 
 ```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
+   yarn install
+   yarn tauri dev --no-watch
 }
 ```
+CAN ALSO DIRECTLY CREATE A APP BUILD 
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+```js
+   for app creation
+   yarn tauri build
+   this will  build and bundle your whole Tauri application into a single installer and this you direcly install. 
+   for a smooth setup experience, please select a location outside of the C Drive as it may cause permisson issues.
+}
+```
+![Screenshot (376)](https://github.com/Prathamesh017/Budget-Buddy-Offline-Desktop-App/assets/92641320/aea338b7-00ac-4989-8b7b-64012727056f)
