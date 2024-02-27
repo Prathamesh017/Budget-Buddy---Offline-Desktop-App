@@ -1,59 +1,33 @@
 import { useState } from 'react'
 import Select from 'react-select'
-import { invoke } from '@tauri-apps/api/tauri'
-import { v4 as uuid } from "uuid";
+
 const transactionTypeOption = [
   { value: 'expense', label: 'Expense' },
   { value: 'income', label: 'Income' },
 ]
 
-
-
-
-const emptyExpenseObj = {
-  expense_id: uuid().slice(0, 8),
-  expense_name: '',
-  expense_type: '',
-  expense_amount: '',
-  expense_date: '',
-}
-
 function AddExpense(props) {
-  const [transaction, setTransaction] = useState(emptyExpenseObj)
+  const [transaction, setTransaction] = useState(props.expenseObj)
   const [checkForError, setCheckForError] = useState(false)
   async function handleSubmit() {
     //check if  all data exists
-    const isTransactionCompleted = Object.entries(transaction).some(
+    const isTransactionDataFilled = Object.entries(transaction).some(
       ([, value]) => {
         return !value
       },
     )
-    setCheckForError(isTransactionCompleted)
-    if (isTransactionCompleted) {
+    setCheckForError(isTransactionDataFilled)
+    if (isTransactionDataFilled) {
       return
     }
-    props.setTransactionList((existTransactions) => [
-      ...existTransactions,
-      transaction,
-    ])
-    //add in sqlite with rust
-    const isTransactionSuccess = await invoke('add_expense', {
-      expenseObj: JSON.stringify(transaction),
-    })
-    console.log(isTransactionSuccess)
-    //revert state back if transaction failed
-    if (!isTransactionSuccess) {
-      setTimeout(() => {
-        props.setTransactionList(props.transactionList)
-        alert('Failed To Add.Try Again')
-      }, 3000)
+    const isTransactionSuccess = props.handleSubmit(transaction)
+    if (isTransactionSuccess) {
+      setTransaction(props.expenseObj)
     }
-
-    setTransaction(emptyExpenseObj)
   }
   return (
     <div>
-      <h1 className="uppercase text-xl font-medium">Add New Transaction</h1>
+      <h1 className="uppercase text-xl text-sky-700 font-medium">{props.title} Expense</h1>
       <div className="add-expense-div mt-2 text-base">
         <div className="add-select">
           <h1>Transaction Type</h1>
@@ -76,6 +50,7 @@ function AddExpense(props) {
             options={transactionTypeOption}
             noOptionsMessage={() => 'No more options'}
             onChange={(data) => {
+        
               setTransaction({ ...transaction, expense_type: data.value })
             }}
           />
@@ -153,7 +128,7 @@ function AddExpense(props) {
             className="bg-indigo-500 hover:bg-indigo-700 py-2 text-white hover:text-black cursor-pointer px-4 mt-2 lg:mt-0 self-start lg:self-end rounded"
             onClick={handleSubmit}
           >
-            Add Expense
+            {props.title} Expense
           </button>
         </div>
       </div>
