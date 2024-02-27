@@ -146,7 +146,7 @@ fn get_current_directory() -> Result<String, String> {
     if current_directory.is_ok() {
       
             let db_file_path =
-            current_directory.unwrap().to_string_lossy().to_string() + "/src/db.sqlite"; //;
+            current_directory.unwrap().to_string_lossy().to_string() + "/db.sqlite"; //;
         
         Ok(db_file_path.into())
     } else {
