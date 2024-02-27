@@ -1,5 +1,4 @@
 import React from 'react'
-
 function ExpenseList(props) {
   const totalBalance = props.transactionList.reduce(
     (accumulator, currentValue) => 
@@ -20,7 +19,7 @@ function ExpenseList(props) {
         </h1>
         {props.transactionList.length>0 && props.transactionList.map((dataObj) => {
           if (dataObj.expense_type === 'income') {
-            return <ExpenseBox key={dataObj.name} data={dataObj}></ExpenseBox>
+            return <ExpenseBox key={dataObj.expense_id} data={dataObj}></ExpenseBox>
           }
         })}
       </div>
@@ -43,7 +42,11 @@ function ExpenseBox(props) {
     <div className="expense Box">
       <div className="expense-box-header w-full flex justify-between border border-gray-300 p-2">
         <h1 className="text lg font-medium text-sky-700">{props.data.expense_name}</h1>
-        <h2
+        <h2 onClick={async ()=>{
+          // // let isTRUE=await invoke("update_expense",{"invokeMessage":JSON.stringify(props.data)});
+          // let isTRUE=await invoke("delete_expense",{id:props.data.expense_id});
+        
+        }}
           className={`text-lg ${
             props.data.expense_type === 'income' ? 'text-[#21ba45]' : 'text-red-700'
           }`}

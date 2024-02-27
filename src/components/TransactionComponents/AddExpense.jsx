@@ -1,12 +1,17 @@
 import { useState } from 'react'
 import Select from 'react-select'
 import { invoke } from '@tauri-apps/api/tauri'
+import { v4 as uuid } from "uuid";
 const transactionTypeOption = [
   { value: 'expense', label: 'Expense' },
   { value: 'income', label: 'Income' },
 ]
 
+
+
+
 const emptyExpenseObj = {
+  expense_id: uuid().slice(0, 8),
   expense_name: '',
   expense_type: '',
   expense_amount: '',
@@ -33,7 +38,7 @@ function AddExpense(props) {
     ])
     //add in sqlite with rust
     const isTransactionSuccess = await invoke('add_expense', {
-      invokeMessage: JSON.stringify(transaction),
+      expenseObj: JSON.stringify(transaction),
     })
     console.log(isTransactionSuccess)
     //revert state back if transaction failed
@@ -124,6 +129,7 @@ function AddExpense(props) {
             <input
               id="amount"
               type="number"
+              value={transaction.expense_amount}
               placeholder="enter amount"
               className={`p-1 border rounded   ${
                 checkForError && !transaction.expense_amount

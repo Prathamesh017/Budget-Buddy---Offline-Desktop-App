@@ -3,6 +3,8 @@
 mod db;
 use db::get_expenses_data;
 use db::add_expense;
+use db::update_expense;
+use db::delete_expense;
 #[tauri::command]
 fn  start_app() {
     db::db_setup();
@@ -15,6 +17,8 @@ fn main() {
             start_app,
             add_expense,
             get_expenses_data,
+            update_expense,
+            delete_expense
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
